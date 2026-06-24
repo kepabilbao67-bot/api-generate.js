@@ -1,0 +1,159 @@
+/**
+ * APIForge - Main Server
+ * The API Marketplace where anyone can create, publish, sell and consume APIs
+ */
+
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import { config } from './config/index.js';
+
+// Import routes
+import authRoutes from './routes/auth.routes.js';
+import apiRoutes from './routes/api.routes.js';
+import marketplaceRoutes from './routes/marketplace.routes.js';
+import liveRoutes from './routes/live.routes.js';
+import analyticsRoutes from './routes/analytics.routes.js';
+import billingRoutes from './routes/billing.routes.js';
+import sdkRoutes from './routes/sdk.routes.js';
+import seoRoutes from './routes/seo.routes.js';
+
+// Initialize database (runs schema creation)
+import './utils/database.js';
+
+const app = express();
+
+// ===========================================
+// Middleware
+// ===========================================
+
+// Security headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabled for SEO pages
+}));
+
+// CORS - allow all origins for API access
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+}));
+
+// Request logging
+app.use(morgan('combined'));
+
+// Body parsing
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Global rate limiting
+const globalLimiter = rateLimit({
+  windowMs: config.rateLimit.windowMs,
+  max: config.rateLimit.maxRequests,
+  message: {
+    error: 'Too many requests',
+    message: 'Rate limit exceeded. Please try again later.',
+    retryAfter: Math.ceil(config.rateLimit.windowMs / 1000),
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', globalLimiter);
+
+
+// ===========================================
+// Routes
+// ===========================================
+
+// API routes (authenticated)
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/apis', apiRoutes);
+app.use('/api/v1/marketplace', marketplaceRoutes);
+app.use('/api/v1/live', liveRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/billing', billingRoutes);
+app.use('/api/v1/sdk', sdkRoutes);
+
+// SEO routes (public, HTML)
+app.use('/', seoRoutes);
+
+// ===========================================
+// Health & Info
+// ===========================================
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'APIForge',
+    version: '1.0.0',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.get('/api/v1', (req, res) => {
+  res.json({
+    name: 'APIForge API',
+    version: '1.0.0',
+    description: 'Create, publish, and monetize APIs in minutes',
+    endpoints: {
+      auth: '/api/v1/auth',
+      apis: '/api/v1/apis',
+      marketplace: '/api/v1/marketplace',
+      live: '/api/v1/live/:slug',
+      analytics: '/api/v1/analytics',
+      billing: '/api/v1/billing',
+      sdk: '/api/v1/sdk',
+    },
+    documentation: `${config.seo.siteUrl}/docs`,
+  });
+});
+
+// ===========================================
+// Error Handling
+// ===========================================
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.method} ${req.path} not found`,
+    docs: `${config.seo.siteUrl}/docs`,
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(`[ERROR] ${err.message}`, err.stack);
+
+  res.status(err.status || 500).json({
+    error: config.nodeEnv === 'production' ? 'Internal Server Error' : err.message,
+    ...(config.nodeEnv !== 'production' && { stack: err.stack }),
+  });
+});
+
+// ===========================================
+// Start Server
+// ===========================================
+
+const PORT = config.port;
+
+app.listen(PORT, () => {
+  console.log(`
+  ╔══════════════════════════════════════════════════╗
+  ║                                                  ║
+  ║   🔥 APIForge v1.0.0                            ║
+  ║   The API Marketplace Engine                     ║
+  ║                                                  ║
+  ║   Server:    http://localhost:${PORT}              ║
+  ║   API Base:  http://localhost:${PORT}/api/v1       ║
+  ║   Health:    http://localhost:${PORT}/health        ║
+  ║   Env:       ${config.nodeEnv}                           ║
+  ║                                                  ║
+  ╚══════════════════════════════════════════════════╝
+  `);
+});
+
+export default app;

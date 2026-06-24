@@ -1,0 +1,42 @@
+{
+  "name": "apiforge",
+  "version": "1.0.0",
+  "description": "APIForge - The API Marketplace where anyone can create, publish, sell and consume auto-generated APIs in minutes",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/scripts/seed.js",
+    "test": "node --test src/tests/**/*.test.js"
+  },
+  "keywords": [
+    "api",
+    "marketplace",
+    "generator",
+    "saas",
+    "rest-api",
+    "sdk-generator",
+    "monetization",
+    "api-economy"
+  ],
+  "author": "APIForge Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.0",
+    "dotenv": "^16.3.1",
+    "express-rate-limit": "^7.1.4",
+    "joi": "^17.11.0",
+    "better-sqlite3": "^9.4.3",
+    "stripe": "^14.11.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
