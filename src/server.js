@@ -44,6 +44,15 @@ import monitoringRoutes from './routes/monitoring.routes.js';
 import playgroundRoutes from './routes/playground.routes.js';
 import cronRoutes from './routes/cron.routes.js';
 import usageRoutes from './routes/usage.routes.js';
+import cloneRoutes from './routes/clone.routes.js';
+import backupRoutes from './routes/backup.routes.js';
+import i18nRoutes from './routes/i18n.routes.js';
+import calculatorRoutes from './routes/calculator.routes.js';
+import keysRoutes from './routes/keys.routes.js';
+import insightsRoutes from './routes/insights.routes.js';
+import logsRoutes from './routes/logs.routes.js';
+import relationshipsRoutes from './routes/relationships.routes.js';
+import favoritesRoutes from './routes/favorites.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -124,6 +133,15 @@ app.use('/api/v1/monitoring', monitoringRoutes);
 app.use('/api/v1/playground', playgroundRoutes);
 app.use('/api/v1/cron', cronRoutes);
 app.use('/api/v1/usage', usageRoutes);
+app.use('/api/v1/clone', cloneRoutes);
+app.use('/api/v1/backup', backupRoutes);
+app.use('/api/v1/i18n', i18nRoutes);
+app.use('/api/v1/calculator', calculatorRoutes);
+app.use('/api/v1/keys', keysRoutes);
+app.use('/api/v1/insights', insightsRoutes);
+app.use('/api/v1/logs', logsRoutes);
+app.use('/api/v1/relationships', relationshipsRoutes);
+app.use('/api/v1/favorites', favoritesRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)
