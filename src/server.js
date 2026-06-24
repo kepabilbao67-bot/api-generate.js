@@ -67,6 +67,7 @@ import deprecationRoutes from './routes/deprecation.routes.js';
 import supportRoutes from './routes/support.routes.js';
 import pricingTiersRoutes from './routes/pricing-tiers.routes.js';
 import gatewayRoutes from './routes/gateway.routes.js';
+import debugRoutes from './routes/debug.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -165,6 +166,7 @@ app.use('/api/v1/newsletter', newsletterRoutes);
 app.use('/api/v1/badges', badgesRoutes);
 app.use('/api/v1/tips', tipsRoutes);
 app.use('/api/v1/branding', brandingRoutes);
+app.use('/api/v1/debug', debugRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard) - use absolute path
