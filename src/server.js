@@ -38,6 +38,12 @@ import searchRoutes from './routes/search.routes.js';
 import graphqlRoutes from './routes/graphql.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import batchRoutes from './routes/batch.routes.js';
+import teamsRoutes from './routes/teams.routes.js';
+import exportDataRoutes from './routes/export-data.routes.js';
+import monitoringRoutes from './routes/monitoring.routes.js';
+import playgroundRoutes from './routes/playground.routes.js';
+import cronRoutes from './routes/cron.routes.js';
+import usageRoutes from './routes/usage.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -112,6 +118,12 @@ app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/query', graphqlRoutes);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/batch', batchRoutes);
+app.use('/api/v1/teams', teamsRoutes);
+app.use('/api/v1/data', exportDataRoutes);
+app.use('/api/v1/monitoring', monitoringRoutes);
+app.use('/api/v1/playground', playgroundRoutes);
+app.use('/api/v1/cron', cronRoutes);
+app.use('/api/v1/usage', usageRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)
