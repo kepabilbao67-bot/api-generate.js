@@ -58,6 +58,10 @@ import sandboxRoutes from './routes/sandbox.routes.js';
 import affiliatesRoutes from './routes/affiliates.routes.js';
 import twofaRoutes from './routes/twofa.routes.js';
 import compareRoutes from './routes/compare.routes.js';
+import newsletterRoutes from './routes/newsletter.routes.js';
+import badgesRoutes from './routes/badges.routes.js';
+import tipsRoutes from './routes/tips.routes.js';
+import brandingRoutes from './routes/branding.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -152,6 +156,10 @@ app.use('/api/v1/sandbox', sandboxRoutes);
 app.use('/api/v1/affiliates', affiliatesRoutes);
 app.use('/api/v1/2fa', twofaRoutes);
 app.use('/api/v1/compare', compareRoutes);
+app.use('/api/v1/newsletter', newsletterRoutes);
+app.use('/api/v1/badges', badgesRoutes);
+app.use('/api/v1/tips', tipsRoutes);
+app.use('/api/v1/branding', brandingRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)
