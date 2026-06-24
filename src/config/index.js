@@ -4,7 +4,7 @@ dotenv.config();
 export const config = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
-  baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+  baseUrl: process.env.BASE_URL || (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : `http://localhost:${process.env.PORT || 3000}`),
   
   jwt: {
     secret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
@@ -29,6 +29,6 @@ export const config = {
   seo: {
     siteName: process.env.SITE_NAME || 'APIForge',
     siteDescription: process.env.SITE_DESCRIPTION || 'Create, publish, and monetize APIs in minutes',
-    siteUrl: process.env.SITE_URL || 'http://localhost:3000',
+    siteUrl: process.env.SITE_URL || process.env.BASE_URL || (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : `http://localhost:${process.env.PORT || 3000}`),
   },
 };

@@ -167,11 +167,20 @@ app.use('/api/v1/tips', tipsRoutes);
 app.use('/api/v1/branding', brandingRoutes);
 app.use('/status', statusRoutes);
 
-// Static files (landing page, dashboard)
-app.use(express.static('public'));
+// Static files (landing page, dashboard) - use absolute path
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+app.use(express.static(join(__dirname, '..', 'public')));
+
+// Fallback: serve index.html for root
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, '..', 'public', 'index.html'));
+});
 
 // SEO routes (public, HTML)
-app.use('/', seoRoutes);
+app.use('/seo', seoRoutes);
 
 // ===========================================
 // Health & Info
