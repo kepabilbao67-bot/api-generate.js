@@ -53,6 +53,11 @@ import insightsRoutes from './routes/insights.routes.js';
 import logsRoutes from './routes/logs.routes.js';
 import relationshipsRoutes from './routes/relationships.routes.js';
 import favoritesRoutes from './routes/favorites.routes.js';
+import eventsRoutes from './routes/events.routes.js';
+import sandboxRoutes from './routes/sandbox.routes.js';
+import affiliatesRoutes from './routes/affiliates.routes.js';
+import twofaRoutes from './routes/twofa.routes.js';
+import compareRoutes from './routes/compare.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -142,6 +147,11 @@ app.use('/api/v1/insights', insightsRoutes);
 app.use('/api/v1/logs', logsRoutes);
 app.use('/api/v1/relationships', relationshipsRoutes);
 app.use('/api/v1/favorites', favoritesRoutes);
+app.use('/api/v1/events', eventsRoutes);
+app.use('/api/v1/sandbox', sandboxRoutes);
+app.use('/api/v1/affiliates', affiliatesRoutes);
+app.use('/api/v1/2fa', twofaRoutes);
+app.use('/api/v1/compare', compareRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)
