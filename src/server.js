@@ -62,6 +62,11 @@ import newsletterRoutes from './routes/newsletter.routes.js';
 import badgesRoutes from './routes/badges.routes.js';
 import tipsRoutes from './routes/tips.routes.js';
 import brandingRoutes from './routes/branding.routes.js';
+import reportsRoutes from './routes/reports.routes.js';
+import deprecationRoutes from './routes/deprecation.routes.js';
+import supportRoutes from './routes/support.routes.js';
+import pricingTiersRoutes from './routes/pricing-tiers.routes.js';
+import gatewayRoutes from './routes/gateway.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
