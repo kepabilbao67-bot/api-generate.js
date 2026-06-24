@@ -34,6 +34,10 @@ import changelogRoutes from './routes/changelog.routes.js';
 import importExportRoutes from './routes/import-export.routes.js';
 import personalRoutes from './routes/personal.routes.js';
 import quickRoutes from './routes/quick.routes.js';
+import searchRoutes from './routes/search.routes.js';
+import graphqlRoutes from './routes/graphql.routes.js';
+import chatRoutes from './routes/chat.routes.js';
+import batchRoutes from './routes/batch.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -104,6 +108,10 @@ app.use('/api/v1/changelog', changelogRoutes);
 app.use('/api/v1', importExportRoutes);
 app.use('/api/v1/personal', personalRoutes);
 app.use('/api/v1/quick', quickRoutes);
+app.use('/api/v1/search', searchRoutes);
+app.use('/api/v1/query', graphqlRoutes);
+app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/batch', batchRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)

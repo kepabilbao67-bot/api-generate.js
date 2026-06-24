@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace - APIForge</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#6366f1;--bg:#0f172a;--bg-card:#1e293b;--text:#f8fafc;--text-muted:#94a3b8;--border:#334155;--success:#10b981}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text)}
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    nav{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links a{color:var(--text-muted);margin-left:24px;font-weight:500}
+    .search-bar{display:flex;gap:12px;margin:32px 0}
+    .search-bar input{flex:1;padding:14px 20px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:1rem;outline:none}
+    .search-bar input:focus{border-color:var(--primary)}
+    .search-bar select{padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+    .api-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all 0.2s;cursor:pointer}
+    .api-card:hover{border-color:var(--primary);transform:translateY(-2px)}
+    .api-card .category{font-size:0.75rem;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .api-card h3{font-size:1.1rem;margin-bottom:8px}
+    .api-card p{color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;line-height:1.4}
+    .api-card .stats{display:flex;gap:16px;font-size:0.8rem;color:var(--text-muted)}
+    .api-card .stats span{display:flex;align-items:center;gap:4px}
+    .api-card .pricing{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .api-card .price{font-weight:700;color:var(--success)}
+    .api-card .creator{font-size:0.8rem;color:var(--text-muted)}
+    .empty{text-align:center;padding:64px;color:var(--text-muted)}
+    .templates-section{margin-top:48px}
+    .templates-section h2{margin-bottom:20px;font-size:1.3rem}
+    .template-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;gap:16px;align-items:center;cursor:pointer;transition:all 0.2s}
+    .template-card:hover{border-color:var(--primary)}
+    .template-card .icon{font-size:2rem}
+    .template-card h4{font-size:1rem;margin-bottom:4px}
+    .template-card p{font-size:0.85rem;color:var(--text-muted)}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo">APIForge</a>
+    <div class="nav-links">
+      <a href="/marketplace.html">Marketplace</a>
+      <a href="/chat.html">AI Creator</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/login.html">Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 style="font-size:2rem;margin-top:24px">API Marketplace</h1>
+    <p style="color:var(--text-muted);margin-top:8px">Discover and subscribe to APIs built by creators</p>
+
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search APIs..." oninput="searchAPIs()">
+      <select id="category" onchange="searchAPIs()">
+        <option value="">All Categories</option>
+        <option value="ecommerce">E-Commerce</option>
+        <option value="ai-ml">AI & ML</option>
+        <option value="finance">Finance</option>
+        <option value="health">Health</option>
+        <option value="social">Social</option>
+        <option value="education">Education</option>
+        <option value="gaming">Gaming</option>
+      </select>
+    </div>
+
+    <div class="grid" id="apis-grid">
+      <div class="empty">Loading APIs...</div>
+    </div>
+
+    <div class="templates-section">
+      <h2>Quick Start Templates</h2>
+      <div class="grid" id="templates-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    async function searchAPIs() {
+      const q = document.getElementById('search').value;
+      const cat = document.getElementById('category').value;
+      let url = '/api/v1/marketplace?limit=20';
+      if (q) url += `&search=${encodeURIComponent(q)}`;
+      if (cat) url += `&category=${cat}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      const grid = document.getElementById('apis-grid');
+
+      if (!data.data || data.data.length === 0) {
+        grid.innerHTML = '<div class="empty">No APIs found. Be the first to publish one!</div>';
+        return;
+      }
+
+      grid.innerHTML = data.data.map(api => `
+        <div class="api-card" onclick="window.location='/api/${api.slug}'">
+          <div class="category">${api.category || 'General'}</div>
+          <h3>${api.name}</h3>
+          <p>${(api.description || '').slice(0, 120)}</p>
+          <div class="stats">
+            <span>${api.stats?.endpoints || 0} endpoints</span>
+            <span>${formatNum(api.stats?.totalRequests || 0)} requests</span>
+            <span>${api.stats?.avgLatency || '0ms'}</span>
+          </div>
+          <div class="pricing">
+            <span class="price">${api.pricing?.model === 'free' ? 'Free' : '$' + (api.pricing?.monthly || 0) + '/mo'}</span>
+            <span class="creator">by ${api.creator}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function loadTemplates() {
+      const res = await fetch('/api/v1/templates');
+      const data = await res.json();
+      const grid = document.getElementById('templates-grid');
+      grid.innerHTML = data.templates.map(t => `
+        <div class="template-card" onclick="deployTemplate('${t.id}')">
+          <div class="icon">${t.icon}</div>
+          <div>
+            <h4>${t.name}</h4>
+            <p>${t.description}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deployTemplate(id) {
+      const token = localStorage.getItem('apiforge_token');
+      if (!token) { window.location = '/login.html'; return; }
+      fetch(`/api/v1/templates/${id}/deploy`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      }).then(r => r.json()).then(d => {
+        if (d.success) alert(`Template deployed! Slug: ${d.api.slug}`);
+        else alert(d.error);
+      });
+    }
+
+    function formatNum(n) {
+      if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+      return n;
+    }
+
+    searchAPIs();
+    loadTemplates();
+  </script>
+</body>
+</html>
