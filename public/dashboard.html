@@ -8,9 +8,10 @@
     *{margin:0;padding:0;box-sizing:border-box}
     :root{--primary:#6366f1;--bg:#0f172a;--bg-card:#1e293b;--text:#f8fafc;--text-muted:#94a3b8;--border:#334155;--success:#10b981;--warning:#f59e0b;--danger:#ef4444}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+    a{color:var(--primary);text-decoration:none}
     .sidebar{width:260px;background:var(--bg-card);border-right:1px solid var(--border);padding:24px;position:fixed;height:100vh;overflow-y:auto}
     .sidebar .logo{font-size:1.3rem;font-weight:800;margin-bottom:32px;color:var(--primary)}
-    .sidebar nav a{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;color:var(--text-muted);margin-bottom:4px;transition:all 0.2s}
+    .sidebar nav a{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;color:var(--text-muted);margin-bottom:4px;transition:all 0.2s;text-decoration:none}
     .sidebar nav a:hover,.sidebar nav a.active{background:rgba(99,102,241,0.1);color:var(--text)}
     .sidebar nav a.active{border-left:3px solid var(--primary)}
     .main{flex:1;margin-left:260px;padding:32px}
@@ -20,121 +21,365 @@
     .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px}
     .stat-card .label{font-size:0.85rem;color:var(--text-muted);margin-bottom:8px}
     .stat-card .value{font-size:2rem;font-weight:700}
-    .stat-card .change{font-size:0.8rem;margin-top:8px}
-    .stat-card .change.up{color:var(--success)}
-    .stat-card .change.down{color:var(--danger)}
+    .stat-card .change{font-size:0.8rem;margin-top:8px;color:var(--success)}
     .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
     .card h3{margin-bottom:16px;font-size:1.1rem}
     table{width:100%;border-collapse:collapse}
     th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}
     th{color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px}
+    .btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:0.9rem;transition:all 0.2s}
+    .btn-primary{background:var(--primary);color:white}
+    .btn-primary:hover{background:#4f46e5;transform:translateY(-1px)}
+    .btn-success{background:var(--success);color:white}
+    .btn-sm{padding:6px 12px;font-size:0.8rem}
     .badge{display:inline-block;padding:4px 8px;border-radius:4px;font-size:0.75rem;font-weight:600}
     .badge-active{background:rgba(16,185,129,0.1);color:var(--success)}
-    .badge-draft{background:rgba(245,158,11,0.1);color:var(--warning)}
-    .btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:0.85rem}
-    .btn-primary{background:var(--primary);color:white}
-    @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}}
+    .empty{text-align:center;padding:40px;color:var(--text-muted)}
+    .empty p{margin-bottom:16px}
+    .quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:32px}
+    .quick-action{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all 0.2s;text-align:center}
+    .quick-action:hover{border-color:var(--primary);transform:translateY(-2px)}
+    .quick-action .icon{font-size:1.5rem;margin-bottom:8px}
+    .quick-action .title{font-weight:600;font-size:0.9rem}
+    .quick-action .desc{font-size:0.75rem;color:var(--text-muted);margin-top:4px}
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center}
+    .modal.show{display:flex}
+    .modal-content{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;max-width:500px;width:90%}
+    .modal-content h2{margin-bottom:16px}
+    .modal-content input,.modal-content textarea{width:100%;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;font-size:0.9rem}
+    .modal-content textarea{min-height:80px;resize:vertical}
+    .result-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px;font-family:monospace;font-size:0.8rem;white-space:pre-wrap;max-height:300px;overflow-y:auto}
+    @media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:16px}}
+    /* Chat Widget */
+    .chat-widget{position:fixed;bottom:24px;right:24px;z-index:999}
+    .chat-toggle{width:56px;height:56px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 20px rgba(99,102,241,0.4);transition:transform 0.2s}
+    .chat-toggle:hover{transform:scale(1.1)}
+    .chat-panel{display:none;position:fixed;bottom:90px;right:24px;width:400px;height:500px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
+    .chat-panel.open{display:flex}
+    .chat-header{padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .chat-header h3{font-size:1rem}
+    .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+    .chat-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:0.9rem;line-height:1.5;white-space:pre-wrap}
+    .chat-msg.user{align-self:flex-end;background:var(--primary);border-radius:12px 12px 4px 12px}
+    .chat-msg.bot{align-self:flex-start;background:var(--bg);border:1px solid var(--border);border-radius:12px 12px 12px 4px}
+    .chat-msg code{background:rgba(0,0,0,0.3);padding:1px 4px;border-radius:3px;font-size:0.8rem}
+    .chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}
+    .chat-input input{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.9rem;outline:none}
+    .chat-input input:focus{border-color:var(--primary)}
+    .chat-input button{padding:10px 16px;border-radius:8px;background:var(--primary);color:white;border:none;font-weight:600;cursor:pointer}
+    .chat-suggestions{display:flex;gap:6px;padding:0 12px 8px;flex-wrap:wrap}
+    .chat-suggestions button{padding:4px 10px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;cursor:pointer}
+    .chat-suggestions button:hover{border-color:var(--primary);color:var(--primary)}
   </style>
 </head>
 <body>
   <aside class="sidebar">
     <div class="logo">APIForge</div>
     <nav>
-      <a href="#" class="active">📊 Dashboard</a>
-      <a href="#">⚡ My APIs</a>
-      <a href="#">🛒 Marketplace</a>
-      <a href="#">📦 Templates</a>
-      <a href="#">🔑 API Keys</a>
-      <a href="#">📈 Analytics</a>
-      <a href="#">💰 Billing</a>
-      <a href="#">🔔 Webhooks</a>
-      <a href="#">⚙️ Settings</a>
+      <a href="/dashboard.html" class="active">📊 Dashboard</a>
+      <a href="/chat.html">💬 AI Creator</a>
+      <a href="/marketplace.html">🛒 Marketplace</a>
+      <a href="/docs.html">📖 Docs</a>
+      <a href="#" onclick="showMyApis()">⚡ My APIs</a>
+      <a href="#" onclick="showKeys()">🔑 API Keys</a>
+      <a href="#" onclick="showTemplates()">📦 Templates</a>
+      <a href="#" onclick="logout()">🚪 Logout</a>
     </nav>
   </aside>
 
   <main class="main">
     <div class="header">
-      <h1>Dashboard</h1>
-      <button class="btn btn-primary" onclick="createApi()">+ Create New API</button>
+      <h1 id="page-title">Dashboard</h1>
+      <button class="btn btn-primary" onclick="showCreateModal()">+ Create New API</button>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="label">Total APIs</div>
-        <div class="value" id="total-apis">-</div>
-        <div class="change up">Active on marketplace</div>
+    <div id="content">
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="quick-action" onclick="quickCreate('tasks')">
+          <div class="icon">✅</div>
+          <div class="title">Tasks API</div>
+          <div class="desc">Instant task manager</div>
+        </div>
+        <div class="quick-action" onclick="quickCreate('contacts')">
+          <div class="icon">👤</div>
+          <div class="title">Contacts API</div>
+          <div class="desc">CRM in seconds</div>
+        </div>
+        <div class="quick-action" onclick="quickCreate('notes')">
+          <div class="icon">📝</div>
+          <div class="title">Notes API</div>
+          <div class="desc">Personal notes</div>
+        </div>
+        <div class="quick-action" onclick="quickCreate('expenses')">
+          <div class="icon">💰</div>
+          <div class="title">Expenses API</div>
+          <div class="desc">Track spending</div>
+        </div>
+        <div class="quick-action" onclick="window.location='/chat.html'">
+          <div class="icon">🤖</div>
+          <div class="title">AI Creator</div>
+          <div class="desc">Describe & create</div>
+        </div>
+        <div class="quick-action" onclick="showTemplates()">
+          <div class="icon">📋</div>
+          <div class="title">Templates</div>
+          <div class="desc">8 pre-built APIs</div>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="label">Total Requests</div>
-        <div class="value" id="total-requests">-</div>
-        <div class="change up">All time</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Avg Latency</div>
-        <div class="value" id="avg-latency">-</div>
-        <div class="change up">Last 7 days</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Revenue</div>
-        <div class="value" id="revenue">-</div>
-        <div class="change up">This month</div>
-      </div>
-    </div>
 
-    <div class="card">
-      <h3>My APIs</h3>
-      <table>
-        <thead>
-          <tr><th>Name</th><th>Status</th><th>Requests</th><th>Revenue</th><th>Latency</th></tr>
-        </thead>
-        <tbody id="apis-table">
-          <tr><td colspan="5" style="text-align:center;color:var(--text-muted)">Loading...</td></tr>
-        </tbody>
-      </table>
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">Total APIs</div>
+          <div class="value" id="total-apis">0</div>
+          <div class="change">Active</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Total Requests</div>
+          <div class="value" id="total-requests">0</div>
+          <div class="change">All time</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Avg Latency</div>
+          <div class="value" id="avg-latency">0ms</div>
+          <div class="change">Last 7 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Revenue</div>
+          <div class="value" id="revenue">$0.00</div>
+          <div class="change">This month</div>
+        </div>
+      </div>
+
+      <!-- My APIs -->
+      <div class="card">
+        <h3>My APIs</h3>
+        <div id="apis-list"></div>
+      </div>
     </div>
   </main>
 
-  <script>
-    const API_BASE = '/api/v1';
-    const token = localStorage.getItem('apiforge_token');
+  <!-- Create API Modal -->
+  <div class="modal" id="create-modal">
+    <div class="modal-content">
+      <h2>🚀 Create New API</h2>
+      <p style="color:var(--text-muted);margin-bottom:16px">Describe your API or pick a quick option below</p>
+      <textarea id="api-description" placeholder="Describe your API... e.g. 'A recipe API with ingredients and cooking steps'"></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="btn btn-sm" onclick="quickCreate('tasks')">✅ Tasks</button>
+        <button class="btn btn-sm" onclick="quickCreate('contacts')">👤 Contacts</button>
+        <button class="btn btn-sm" onclick="quickCreate('notes')">📝 Notes</button>
+        <button class="btn btn-sm" onclick="quickCreate('inventory')">📦 Inventory</button>
+        <button class="btn btn-sm" onclick="quickCreate('leads')">🎯 Leads</button>
+        <button class="btn btn-sm" onclick="quickCreate('expenses')">💰 Expenses</button>
+      </div>
+      <button class="btn btn-primary" onclick="createFromDescription()" style="width:100%">Generate with AI</button>
+      <button class="btn" onclick="closeModal()" style="width:100%;margin-top:8px;background:var(--border);color:var(--text)">Cancel</button>
+      <div id="create-result" class="result-box" style="display:none"></div>
+    </div>
+  </div>
 
-    async function fetchDashboard() {
-      if (!token) { window.location.href = '/'; return; }
+  <!-- Chat AI Widget (integrated) -->
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()" title="AI API Creator">🤖</button>
+    <div class="chat-panel" id="chat-panel">
+      <div class="chat-header">
+        <h3>🤖 AI API Creator</h3>
+        <button onclick="toggleChat()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem">✕</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-msg bot">Hey! Tell me what API you need and I'll create it instantly.
+
+Examples:
+• "contacts API with name and email"
+• "recipe API with ingredients"
+• "expense tracker with categories"</div>
+      </div>
+      <div class="chat-suggestions">
+        <button onclick="chatSend('contacts API with name, email, phone')">👤 Contacts</button>
+        <button onclick="chatSend('task manager with priorities')">✅ Tasks</button>
+        <button onclick="chatSend('expense tracker with categories')">💰 Expenses</button>
+        <button onclick="chatSend('notes API with tags')">📝 Notes</button>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chat-input" placeholder="Describe your API..." onkeypress="if(event.key==='Enter')chatSend()">
+        <button onclick="chatSend()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api/v1';
+    const token = localStorage.getItem('apiforge_token');
+    if (!token) window.location.href = '/login.html';
+
+    const headers = { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' };
+    let chatSessionId = null;
+
+    // === CHAT AI (integrated) ===
+    function toggleChat() {
+      document.getElementById('chat-panel').classList.toggle('open');
+      document.getElementById('chat-input').focus();
+    }
+
+    function addChatMsg(role, text) {
+      const el = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'chat-msg ' + role;
+      div.innerHTML = text.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+      el.appendChild(div);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    async function chatSend(text) {
+      const input = document.getElementById('chat-input');
+      const msg = text || input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      addChatMsg('user', msg);
+
+      try {
+        const res = await fetch(API + '/chat', {
+          method: 'POST', headers,
+          body: JSON.stringify({ message: msg, sessionId: chatSessionId }),
+        }).then(r => r.json());
+
+        if (res.success) {
+          chatSessionId = res.sessionId;
+          addChatMsg('bot', res.reply);
+          // If API was created, refresh dashboard
+          if (res.api) {
+            addChatMsg('bot', '🎉 API Created!\\n🔑 Key: `' + res.api.apiKey + '`\\n🔗 URL: `' + res.api.baseUrl + '`');
+            loadDashboard();
+          }
+        } else {
+          addChatMsg('bot', '❌ ' + (res.error || 'Error'));
+        }
+      } catch (e) { addChatMsg('bot', '❌ Connection error'); }
+    }
+
+    // === DASHBOARD ===
+
+    // Load dashboard
+    async function loadDashboard() {
       try {
         const [apisRes, analyticsRes] = await Promise.all([
-          fetch(`${API_BASE}/apis`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_BASE}/analytics/overview`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(API + '/apis', { headers }).then(r => r.json()),
+          fetch(API + '/analytics/overview', { headers }).then(r => r.json()),
         ]);
-        const apis = await apisRes.json();
-        const analytics = await analyticsRes.json();
-        if (analytics.success) {
-          document.getElementById('total-apis').textContent = analytics.totalApis || 0;
-          document.getElementById('total-requests').textContent = formatNumber(analytics.totalRequests || 0);
-          document.getElementById('avg-latency').textContent = `${analytics.avgLatency || 0}ms`;
-          document.getElementById('revenue').textContent = `$${(analytics.totalRevenue || 0).toFixed(2)}`;
+
+        if (analyticsRes.success) {
+          document.getElementById('total-apis').textContent = analyticsRes.totalApis || 0;
+          document.getElementById('total-requests').textContent = fmt(analyticsRes.totalRequests || 0);
+          document.getElementById('avg-latency').textContent = (analyticsRes.avgLatency || 0) + 'ms';
+          document.getElementById('revenue').textContent = '$' + (analyticsRes.totalRevenue || 0).toFixed(2);
         }
-        if (apis.success && apis.apis.length > 0) {
-          document.getElementById('apis-table').innerHTML = apis.apis.map(api => `
-            <tr>
-              <td><strong>${api.name}</strong><br><small style="color:var(--text-muted)">/api/v1/live/${api.slug}</small></td>
-              <td><span class="badge badge-${api.status === 'active' ? 'active' : 'draft'}">${api.status}</span></td>
-              <td>${formatNumber(api.total_requests)}</td>
-              <td>$${(api.total_revenue || 0).toFixed(2)}</td>
-              <td>${api.avg_latency || 0}ms</td>
-            </tr>
-          `).join('');
+
+        if (apisRes.success && apisRes.apis && apisRes.apis.length > 0) {
+          document.getElementById('apis-list').innerHTML = '<table><thead><tr><th>Name</th><th>Status</th><th>Requests</th><th>Actions</th></tr></thead><tbody>' +
+            apisRes.apis.map(api => `
+              <tr>
+                <td><strong>${api.name}</strong><br><small style="color:var(--text-muted)">${api.slug}</small></td>
+                <td><span class="badge badge-active">${api.status}</span></td>
+                <td>${fmt(api.total_requests)}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" onclick="viewApi('${api.slug}')">Use</button>
+                  <button class="btn btn-sm" onclick="viewSpec('${api.slug}')" style="background:var(--border);color:var(--text)">Spec</button>
+                </td>
+              </tr>
+            `).join('') + '</tbody></table>';
+        } else {
+          document.getElementById('apis-list').innerHTML = '<div class="empty"><p>No APIs yet. Create your first one!</p><button class="btn btn-primary" onclick="showCreateModal()">+ Create API</button></div>';
         }
-      } catch (e) { console.error('Dashboard error:', e); }
+      } catch (e) { console.error(e); }
     }
 
-    function formatNumber(n) {
-      if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
-      if (n >= 1000) return (n/1000).toFixed(1) + 'K';
-      return String(n);
+    // Quick create
+    async function quickCreate(name) {
+      closeModal();
+      document.getElementById('apis-list').innerHTML = '<div class="empty"><p>Creating ' + name + ' API...</p></div>';
+      try {
+        const res = await fetch(API + '/quick/' + name, { method: 'POST', headers }).then(r => r.json());
+        if (res.success) {
+          alert('✅ API "' + res.api.name + '" created!\\n\\n🔗 URL: ' + res.api.baseUrl + '\\n🔑 Key: ' + res.apiKey + '\\n\\nCopy your API key now!');
+          loadDashboard();
+        } else {
+          alert('Error: ' + (res.error || 'Unknown error'));
+        }
+      } catch (e) { alert('Error: ' + e.message); }
     }
 
-    function createApi() { alert('Use POST /api/v1/apis to create a new API!'); }
-    fetchDashboard();
+    // Create from AI description
+    async function createFromDescription() {
+      const desc = document.getElementById('api-description').value;
+      if (!desc || desc.length < 10) { alert('Write a longer description'); return; }
+
+      const resultEl = document.getElementById('create-result');
+      resultEl.style.display = 'block';
+      resultEl.textContent = 'Generating...';
+
+      try {
+        const res = await fetch(API + '/ai/deploy', {
+          method: 'POST', headers,
+          body: JSON.stringify({ description: desc }),
+        }).then(r => r.json());
+
+        if (res.success) {
+          resultEl.textContent = '✅ API Created!\\n\\nName: ' + res.api.name + '\\nSlug: ' + res.api.slug + '\\nURL: ' + res.api.baseUrl + '\\nEndpoints: ' + res.api.endpoints?.length;
+          loadDashboard();
+        } else {
+          resultEl.textContent = '❌ Error: ' + res.error;
+        }
+      } catch (e) { resultEl.textContent = '❌ ' + e.message; }
+    }
+
+    // View API details
+    function viewApi(slug) {
+      window.open('/api/v1/playground/' + slug, '_blank');
+    }
+
+    function viewSpec(slug) {
+      window.open('/api/v1/personal/' + slug + '/docs', '_blank');
+    }
+
+    // Show templates
+    async function showTemplates() {
+      const res = await fetch(API + '/templates').then(r => r.json());
+      const html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">' +
+        res.templates.map(t => `
+          <div class="quick-action" onclick="deployTemplate('${t.id}')">
+            <div class="icon">${t.icon}</div>
+            <div class="title">${t.name}</div>
+            <div class="desc">${t.resourceCount} resources, ${t.fieldCount} fields</div>
+          </div>
+        `).join('') + '</div>';
+      document.getElementById('apis-list').innerHTML = '<h3>Templates (click to deploy)</h3>' + html;
+    }
+
+    async function deployTemplate(id) {
+      const res = await fetch(API + '/templates/' + id + '/deploy', { method: 'POST', headers }).then(r => r.json());
+      if (res.success) {
+        alert('✅ Template deployed! Slug: ' + res.api.slug);
+        loadDashboard();
+      } else { alert('Error: ' + res.error); }
+    }
+
+    // Show API keys
+    async function showKeys() {
+      const res = await fetch(API + '/keys', { headers }).then(r => r.json());
+      document.getElementById('apis-list').innerHTML = '<h3>API Keys</h3><table><thead><tr><th>Name</th><th>Key</th><th>Requests</th></tr></thead><tbody>' +
+        (res.keys || []).map(k => `<tr><td>${k.name}</td><td><code>${k.key_value}</code></td><td>${k.requests_used}/${k.rate_limit}</td></tr>`).join('') +
+        '</tbody></table>';
+    }
+
+    function showMyApis() { loadDashboard(); }
+    function showCreateModal() { document.getElementById('create-modal').classList.add('show'); }
+    function closeModal() { document.getElementById('create-modal').classList.remove('show'); }
+    function logout() { localStorage.clear(); window.location.href = '/login.html'; }
+    function fmt(n) { if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return String(n); }
+
+    loadDashboard();
   </script>
 </body>
 </html>
