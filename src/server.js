@@ -21,6 +21,12 @@ import sdkRoutes from './routes/sdk.routes.js';
 import seoRoutes from './routes/seo.routes.js';
 import templatesRoutes from './routes/templates.routes.js';
 import webhooksRoutes from './routes/webhooks.routes.js';
+import aiRoutes from './routes/ai.routes.js';
+import reviewsRoutes from './routes/reviews.routes.js';
+import leaderboardRoutes from './routes/leaderboard.routes.js';
+import statusRoutes from './routes/status.routes.js';
+import domainsRoutes from './routes/domains.routes.js';
+import versioningRoutes from './routes/versioning.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -79,6 +85,12 @@ app.use('/api/v1/billing', billingRoutes);
 app.use('/api/v1/sdk', sdkRoutes);
 app.use('/api/v1/templates', templatesRoutes);
 app.use('/api/v1/webhooks', webhooksRoutes);
+app.use('/api/v1/ai', aiRoutes);
+app.use('/api/v1/reviews', reviewsRoutes);
+app.use('/api/v1/leaderboard', leaderboardRoutes);
+app.use('/api/v1/domains', domainsRoutes);
+app.use('/api/v1/versions', versioningRoutes);
+app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)
 app.use(express.static('public'));
