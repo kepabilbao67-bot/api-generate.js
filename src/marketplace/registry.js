@@ -4,6 +4,7 @@
  */
 
 import db from '../utils/database.js';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * List APIs in the marketplace with filters and pagination
@@ -187,7 +188,6 @@ export function subscribeToApi(userId, apiId, plan = 'free') {
     throw new Error('Already subscribed to this API');
   }
 
-  const { v4: uuidv4 } = await import('uuid');
   const id = uuidv4();
   const limits = { free: 1000, basic: 10000, pro: 100000, unlimited: -1 };
 
