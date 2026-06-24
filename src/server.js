@@ -27,6 +27,13 @@ import leaderboardRoutes from './routes/leaderboard.routes.js';
 import statusRoutes from './routes/status.routes.js';
 import domainsRoutes from './routes/domains.routes.js';
 import versioningRoutes from './routes/versioning.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+import pluginsRoutes from './routes/plugins.routes.js';
+import discussionsRoutes from './routes/discussions.routes.js';
+import changelogRoutes from './routes/changelog.routes.js';
+import importExportRoutes from './routes/import-export.routes.js';
+import personalRoutes from './routes/personal.routes.js';
+import quickRoutes from './routes/quick.routes.js';
 
 // Initialize database (runs schema creation)
 import './utils/database.js';
@@ -90,6 +97,13 @@ app.use('/api/v1/reviews', reviewsRoutes);
 app.use('/api/v1/leaderboard', leaderboardRoutes);
 app.use('/api/v1/domains', domainsRoutes);
 app.use('/api/v1/versions', versioningRoutes);
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/plugins', pluginsRoutes);
+app.use('/api/v1/discussions', discussionsRoutes);
+app.use('/api/v1/changelog', changelogRoutes);
+app.use('/api/v1', importExportRoutes);
+app.use('/api/v1/personal', personalRoutes);
+app.use('/api/v1/quick', quickRoutes);
 app.use('/status', statusRoutes);
 
 // Static files (landing page, dashboard)
