@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - APIForge</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#7c3aed;--primary-light:#a78bfa;--accent:#06b6d4;--bg:#030712;--bg-card:#111827;--text:#f9fafb;--text-muted:#9ca3af;--border:#1f2937}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+    a{color:var(--primary-light);text-decoration:none}
+    nav{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(3,7,18,0.9);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+    .logo{font-size:1.2rem;font-weight:800}.logo span{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links a{color:var(--text-muted);margin-left:24px;font-size:0.9rem;font-weight:500}
+    .container{max-width:800px;margin:0 auto;padding:64px 24px}
+    h1{font-size:2.5rem;font-weight:800;letter-spacing:-1px;margin-bottom:16px}
+    h2{font-size:1.5rem;font-weight:700;margin:48px 0 16px;letter-spacing:-0.5px}
+    p{color:var(--text-muted);margin-bottom:16px;font-size:1rem}
+    .highlight{color:var(--text);font-weight:600}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0}
+    .stat{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center}
+    .stat .number{font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stat .label{font-size:0.8rem;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px}
+    .values{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:32px 0}
+    .value-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px}
+    .value-card h3{font-size:1rem;margin-bottom:8px}
+    .value-card p{font-size:0.85rem;margin:0}
+    .cta{text-align:center;margin-top:64px;padding:48px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px}
+    .cta h2{margin:0 0 12px}
+    .btn{display:inline-flex;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.95rem;background:linear-gradient(135deg,var(--primary),#6366f1);color:white;margin-top:16px;box-shadow:0 4px 15px rgba(124,58,237,0.3);transition:all 0.2s}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(124,58,237,0.4)}
+    @media(max-width:768px){.stats-row,.values{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo"><span>API</span>Forge</a>
+    <div class="nav-links">
+      <a href="/marketplace.html">Marketplace</a>
+      <a href="/docs.html">Docs</a>
+      <a href="/login.html">Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>About APIForge</h1>
+    <p>We believe building APIs should take <span class="highlight">minutes, not months</span>. APIForge is the platform where anyone can create, publish, and monetize REST APIs — powered by AI, designed for developers.</p>
+
+    <div class="stats-row">
+      <div class="stat"><div class="number">11K+</div><div class="label">Lines of Code</div></div>
+      <div class="stat"><div class="number">130+</div><div class="label">API Endpoints</div></div>
+      <div class="stat"><div class="number">9</div><div class="label">Major Versions</div></div>
+    </div>
+
+    <h2>Our Mission</h2>
+    <p>The API economy is worth $5 trillion, but building APIs is still complex and time-consuming. We're changing that. APIForge democratizes API creation — if you can describe what you need, you can build and sell an API.</p>
+
+    <h2>What Makes Us Different</h2>
+    <div class="values">
+      <div class="value-card">
+        <h3>🤖 AI-First</h3>
+        <p>Describe your API in plain English. Our AI generates everything: endpoints, validation, docs, SDKs.</p>
+      </div>
+      <div class="value-card">
+        <h3>💰 Built to Monetize</h3>
+        <p>Not just a generator — a complete marketplace. Set pricing, track revenue, receive payouts.</p>
+      </div>
+      <div class="value-card">
+        <h3>⚡ Instant Deploy</h3>
+        <p>From idea to live API in 60 seconds. No servers to manage, no infrastructure headaches.</p>
+      </div>
+      <div class="value-card">
+        <h3>🔗 Universal Compatibility</h3>
+        <p>OpenAPI specs work with Zapier, Make, GPTs, Postman, and any tool that speaks REST.</p>
+      </div>
+    </div>
+
+    <h2>Technology</h2>
+    <p>Built with <span class="highlight">Node.js</span> and <span class="highlight">Express</span>, using <span class="highlight">SQLite</span> for high-performance data storage. No external AI dependencies — our NLP engine runs locally for instant generation with zero API costs.</p>
+    <p>Payments via <span class="highlight">Stripe Connect</span>. Deployed globally on modern infrastructure. <span class="highlight">99.9% uptime</span> guaranteed.</p>
+
+    <h2>Open Source</h2>
+    <p>APIForge is open source under the MIT license. Fork it, self-host it, or contribute to it. We believe in building in public.</p>
+    <p><a href="https://github.com/kepabilbao67-bot/api-generate.js" target="_blank">View on GitHub →</a></p>
+
+    <div class="cta">
+      <h2>Ready to build?</h2>
+      <p>Create your first API in 60 seconds. No credit card required.</p>
+      <a href="/login.html" class="btn">Get Started Free →</a>
+    </div>
+  </div>
+</body>
+</html>
