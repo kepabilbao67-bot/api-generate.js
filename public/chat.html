@@ -3,52 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>API Chat Creator - APIForge</title>
+  <title>AI API Creator - APIForge</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--primary:#6366f1;--bg:#0f172a;--bg-card:#1e293b;--text:#f8fafc;--text-muted:#94a3b8;--border:#334155;--success:#10b981}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column}
-    .header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-    .header h1{font-size:1.2rem;font-weight:700}
-    .header .badge{background:var(--primary);color:white;padding:2px 8px;border-radius:10px;font-size:0.7rem}
-    .chat-container{flex:1;overflow-y:auto;padding:24px;max-width:800px;margin:0 auto;width:100%}
-    .message{margin-bottom:16px;display:flex;gap:12px}
+    :root{--primary:#7c3aed;--primary-light:#a78bfa;--accent:#06b6d4;--bg:#030712;--bg-card:#111827;--bg-elevated:#1f2937;--text:#f9fafb;--text-muted:#9ca3af;--border:#1f2937;--success:#10b981}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column}
+    .header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-card)}
+    .header-left{display:flex;align-items:center;gap:12px}
+    .header .logo{font-size:1.1rem;font-weight:800;letter-spacing:-0.5px}
+    .header .logo span{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .header .badge{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;padding:3px 10px;border-radius:100px;font-size:0.65rem;font-weight:700;letter-spacing:0.5px}
+    .header-links a{color:var(--text-muted);font-size:0.85rem;margin-left:20px}
+    .header-links a:hover{color:var(--text)}
+    .chat-container{flex:1;overflow-y:auto;padding:24px;max-width:750px;margin:0 auto;width:100%}
+    .message{margin-bottom:20px;display:flex;gap:12px;animation:fadeIn 0.3s}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     .message.user{justify-content:flex-end}
-    .message.user .bubble{background:var(--primary);border-radius:16px 16px 4px 16px}
-    .message.assistant .bubble{background:var(--bg-card);border:1px solid var(--border);border-radius:16px 16px 16px 4px}
-    .bubble{padding:12px 16px;max-width:80%;line-height:1.5;font-size:0.95rem;white-space:pre-wrap}
-    .bubble code{background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-size:0.85rem}
-    .input-area{padding:16px 24px;border-top:1px solid var(--border);max-width:800px;margin:0 auto;width:100%}
-    .input-row{display:flex;gap:8px}
-    .input-row input{flex:1;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:1rem;outline:none}
+    .message.user .bubble{background:linear-gradient(135deg,var(--primary),#6366f1);border-radius:18px 18px 4px 18px;color:white}
+    .message.bot .bubble{background:var(--bg-card);border:1px solid var(--border);border-radius:18px 18px 18px 4px}
+    .bubble{padding:14px 18px;max-width:85%;line-height:1.7;font-size:0.92rem;white-space:pre-wrap;word-wrap:break-word}
+    .bubble code{background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-size:0.82rem;font-family:'JetBrains Mono',monospace}
+    .bubble b,.bubble strong{color:var(--primary-light)}
+    .typing{padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;display:inline-block;margin-bottom:20px}
+    .typing span{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--text-muted);margin:0 2px;animation:bounce 1.4s infinite}
+    .typing span:nth-child(2){animation-delay:0.2s}
+    .typing span:nth-child(3){animation-delay:0.4s}
+    @keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+    .input-area{padding:16px 24px;border-top:1px solid var(--border);background:var(--bg-card);max-width:750px;margin:0 auto;width:100%}
+    .suggestions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+    .suggestions button{padding:8px 14px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
+    .suggestions button:hover{border-color:var(--primary);color:var(--primary-light);background:rgba(124,58,237,0.05)}
+    .input-row{display:flex;gap:10px}
+    .input-row input{flex:1;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;outline:none;transition:border 0.2s}
     .input-row input:focus{border-color:var(--primary)}
-    .input-row button{padding:12px 24px;border-radius:8px;background:var(--primary);color:white;border:none;font-weight:600;cursor:pointer}
-    .input-row button:hover{background:#4f46e5}
-    .typing{color:var(--text-muted);font-style:italic;padding:8px 16px}
-    .suggestions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-    .suggestions button{padding:6px 12px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.8rem;cursor:pointer}
-    .suggestions button:hover{border-color:var(--primary);color:var(--primary)}
+    .input-row input::placeholder{color:#4b5563}
+    .input-row button{padding:14px 24px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#6366f1);color:white;border:none;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 12px rgba(124,58,237,0.3)}
+    .input-row button:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,0.4)}
+    .input-row button:disabled{opacity:0.5;cursor:not-allowed;transform:none}
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>API Chat Creator</h1>
-    <span class="badge">AI</span>
+    <div class="header-left">
+      <a href="/" class="logo"><span>API</span>Forge</a>
+      <span class="badge">AI CREATOR</span>
+    </div>
+    <div class="header-links">
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/docs.html">Docs</a>
+    </div>
   </div>
 
   <div class="chat-container" id="chat"></div>
 
   <div class="input-area">
     <div class="suggestions" id="suggestions">
-      <button onclick="sendSuggestion('I need a contacts API')">Contacts API</button>
-      <button onclick="sendSuggestion('Create a task manager API')">Task Manager</button>
-      <button onclick="sendSuggestion('API for restaurant with menu and reservations')">Restaurant</button>
-      <button onclick="sendSuggestion('Expense tracker API')">Expenses</button>
-      <button onclick="sendSuggestion('Blog API with posts and comments')">Blog CMS</button>
+      <button onclick="sendSuggestion('contacts API with name, email, phone, company')">👤 Contacts</button>
+      <button onclick="sendSuggestion('task manager with title, priority, status, due date')">✅ Tasks</button>
+      <button onclick="sendSuggestion('restaurant API with menu, reservations, reviews')">🍽️ Restaurant</button>
+      <button onclick="sendSuggestion('expense tracker with amount, category, date')">💰 Expenses</button>
+      <button onclick="sendSuggestion('blog API with posts, comments, categories')">📝 Blog</button>
+      <button onclick="sendSuggestion('inventory API with products, stock, suppliers')">📦 Inventory</button>
     </div>
     <div class="input-row">
-      <input type="text" id="input" placeholder="Describe the API you want..." onkeypress="if(event.key==='Enter')send()">
-      <button onclick="send()">Send</button>
+      <input type="text" id="input" placeholder="Describe the API you want to create..." onkeypress="if(event.key==='Enter')send()">
+      <button onclick="send()" id="send-btn">Create →</button>
     </div>
   </div>
 
@@ -56,17 +75,35 @@
     const API = '/api/v1/chat';
     const token = localStorage.getItem('apiforge_token');
     let sessionId = null;
+    let sending = false;
 
     function addMessage(role, text) {
       const chat = document.getElementById('chat');
       const div = document.createElement('div');
-      div.className = `message ${role}`;
-      div.innerHTML = `<div class="bubble">${text.replace(/\n/g, '<br>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')}</div>`;
+      div.className = 'message ' + role;
+      div.innerHTML = '<div class="bubble">' + text.replace(/\n/g, '<br>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') + '</div>';
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    function showTyping() {
+      const chat = document.getElementById('chat');
+      const div = document.createElement('div');
+      div.className = 'message bot';
+      div.id = 'typing';
+      div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
       chat.appendChild(div);
       chat.scrollTop = chat.scrollHeight;
     }
 
+    function hideTyping() {
+      const el = document.getElementById('typing');
+      if (el) el.remove();
+    }
+
     async function send() {
+      if (sending) return;
       const input = document.getElementById('input');
       const msg = input.value.trim();
       if (!msg) return;
@@ -74,24 +111,35 @@
       input.value = '';
       addMessage('user', msg);
       document.getElementById('suggestions').style.display = 'none';
+      sending = true;
+      document.getElementById('send-btn').disabled = true;
+      showTyping();
 
       try {
         const res = await fetch(API, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify({ message: msg, sessionId }),
         });
         const data = await res.json();
+        hideTyping();
 
         if (data.success) {
           sessionId = data.sessionId;
-          addMessage('assistant', data.reply);
+          addMessage('bot', data.reply);
+          if (data.api) {
+            addMessage('bot', '🎉 **Your API is live!**\n\n🔗 URL: `' + data.api.baseUrl + '`\n🔑 Key: `' + data.api.apiKey + '`\n\nCopy your API key and try it!');
+          }
         } else {
-          addMessage('assistant', `Error: ${data.error}. Make sure you're logged in.`);
+          addMessage('bot', '⚠️ ' + (data.error || 'Something went wrong. Please log in first.'));
         }
       } catch (e) {
-        addMessage('assistant', 'Connection error. Is the server running?');
+        hideTyping();
+        addMessage('bot', '⚠️ Connection error. Make sure you are logged in.');
       }
+      sending = false;
+      document.getElementById('send-btn').disabled = false;
+      input.focus();
     }
 
     function sendSuggestion(text) {
@@ -99,11 +147,11 @@
       send();
     }
 
-    // Initial greeting
+    // Initial
     if (!token) {
-      addMessage('assistant', 'Please log in first to create APIs. Go to the main page to register.');
+      addMessage('bot', '⚠️ You need to **log in** first to create APIs.\n\nGo to `/login.html` to sign in or create an account, then come back here!');
     } else {
-      addMessage('assistant', "Hey! I'm your API assistant. Describe what you need and I'll create it instantly.\n\nExamples:\n• \"I need an API for my clients and their projects\"\n• \"Create a recipe API with ingredients\"\n• \"Expense tracker with categories\"\n\nOr click a suggestion below!");
+      addMessage('bot', 'Hey! 👋 I\'m your AI API creator.\n\nTell me what API you need and I\'ll build it for you **instantly**.\n\nClick a suggestion below or describe in your own words!');
     }
   </script>
 </body>
