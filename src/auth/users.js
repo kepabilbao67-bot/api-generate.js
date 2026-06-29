@@ -27,10 +27,16 @@ export async function registerUser({ email, username, password, displayName }) {
   const id = uuidv4();
   const passwordHash = await hashPassword(password);
 
+  // First user gets enterprise plan (unlimited), rest get free
+  const userCount = db.prepare('SELECT COUNT(*) as c FROM users').get();
+  const ownerEmails = (process.env.OWNER_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean);
+  const isOwner = userCount.c === 0 || ownerEmails.includes(email);
+  const plan = isOwner ? 'enterprise' : 'free';
+
   db.prepare(`
-    INSERT INTO users (id, email, username, password_hash, display_name)
-    VALUES (?, ?, ?, ?, ?)
-  `).run(id, email, username, passwordHash, displayName || username);
+    INSERT INTO users (id, email, username, password_hash, display_name, plan)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(id, email, username, passwordHash, displayName || username, plan);
 
   const token = generateToken({ userId: id, username, email });
   const refreshToken = generateRefreshToken({ userId: id });
@@ -52,6 +58,14 @@ export async function loginUser({ email, password }) {
   const validPassword = await comparePassword(password, user.password_hash);
   if (!validPassword) {
     throw new Error('Invalid email or password');
+  }
+
+  // Auto-upgrade owner on login
+  const ownerEmails = (process.env.OWNER_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean);
+  const isFirstUser = db.prepare('SELECT id FROM users ORDER BY created_at ASC LIMIT 1').get()?.id === user.id;
+  if ((ownerEmails.includes(email) || isFirstUser) && user.plan !== 'enterprise') {
+    db.prepare("UPDATE users SET plan = 'enterprise' WHERE id = ?").run(user.id);
+    user.plan = 'enterprise';
   }
 
   const token = generateToken({ userId: user.id, username: user.username, email: user.email });

@@ -309,22 +309,23 @@ Examples:
       try {
         const res = await fetch(API + '/quick/' + name, { method: 'POST', headers }).then(r => r.json());
         if (res.success) {
-          alert('✅ API "' + res.api.name + '" created!\\n\\n🔗 URL: ' + res.api.baseUrl + '\\n🔑 Key: ' + res.apiKey + '\\n\\nCopy your API key now!');
+          const msg = 'API "' + res.api.name + '" created!\n\nURL: ' + res.api.baseUrl + '\nAPI Key: ' + res.apiKey + '\n\nCopy your API key - you need it to access your API!';
+          alert(msg);
           loadDashboard();
         } else {
-          alert('Error: ' + (res.error || 'Unknown error'));
+          alert('Error: ' + (res.error || 'Could not create API. You may have reached your plan limit.'));
         }
-      } catch (e) { alert('Error: ' + e.message); }
+      } catch (e) { alert('Connection error: ' + e.message); }
     }
 
     // Create from AI description
     async function createFromDescription() {
       const desc = document.getElementById('api-description').value;
-      if (!desc || desc.length < 10) { alert('Write a longer description'); return; }
+      if (!desc || desc.length < 10) { alert('Please write a longer description (at least 10 chars)'); return; }
 
       const resultEl = document.getElementById('create-result');
       resultEl.style.display = 'block';
-      resultEl.textContent = 'Generating...';
+      resultEl.textContent = 'Generating with AI...';
 
       try {
         const res = await fetch(API + '/ai/deploy', {
@@ -333,12 +334,12 @@ Examples:
         }).then(r => r.json());
 
         if (res.success) {
-          resultEl.textContent = '✅ API Created!\\n\\nName: ' + res.api.name + '\\nSlug: ' + res.api.slug + '\\nURL: ' + res.api.baseUrl + '\\nEndpoints: ' + res.api.endpoints?.length;
-          loadDashboard();
+          resultEl.textContent = 'API Created!\n\nName: ' + (res.api?.name || res.message) + '\nSlug: ' + (res.api?.slug || '') + '\n\nGo to Dashboard to use it!';
+          setTimeout(() => { closeModal(); loadDashboard(); }, 2000);
         } else {
-          resultEl.textContent = '❌ Error: ' + res.error;
+          resultEl.textContent = 'Error: ' + (res.error || 'Failed to create. Check plan limits.');
         }
-      } catch (e) { resultEl.textContent = '❌ ' + e.message; }
+      } catch (e) { resultEl.textContent = 'Connection error: ' + e.message; }
     }
 
     // View API details
