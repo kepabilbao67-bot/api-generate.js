@@ -6,7 +6,7 @@
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert';
 
-const BASE = 'http://localhost:3000';
+const BASE = process.env.TEST_BASE_URL || 'http://localhost:3000';
 let token = '';
 let apiSlug = '';
 let apiKey = '';
